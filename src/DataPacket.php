@@ -11,9 +11,7 @@ use function get_class;
 abstract class DataPacket implements Packet
 {
     public const NETWORK_ID = 0;
-
-    public const PID_MASK = 0x3ff; // 10 bits
-
+    public const PID_MASK = 0x3FF; // 10 bits
     private const SUBCLIENT_ID_MASK = 0x03; // 2 bits
     private const SENDER_SUBCLIENT_ID_SHIFT = 10;
     private const RECIPIENT_SUBCLIENT_ID_SHIFT = 12;
@@ -28,7 +26,7 @@ abstract class DataPacket implements Packet
 
     public function pid(): int
     {
-        return static::NETWORK_ID;
+        return self::NETWORK_ID;
     }
 
     public function getName(): string
@@ -63,7 +61,6 @@ abstract class DataPacket implements Packet
         $header = $in->getUnsignedVarInt();
         $pid = $header & self::PID_MASK;
 
-        // Use a method to validate the packet ID.
         $this->validatePacketId($pid);
 
         $this->senderSubId = ($header >> self::SENDER_SUBCLIENT_ID_SHIFT) & self::SUBCLIENT_ID_MASK;
@@ -72,13 +69,13 @@ abstract class DataPacket implements Packet
 
     protected function validatePacketId(int $pid): void
     {
-        if ($pid !== static::NETWORK_ID) {
-            throw new PacketDecodeException("Invalid packet ID: expected " . static::NETWORK_ID . ", got $pid");
+        if ($pid !== self::NETWORK_ID) {
+            throw new PacketDecodeException("Invalid packet ID: expected " . self::NETWORK_ID . ", got $pid");
         }
     }
 
     /**
-     * Decodes the packet body, without the packet ID or other generic header fields.
+     * Decodes the packet body, excluding the packet ID and other generic header fields.
      *
      * @throws PacketDecodeException
      * @throws BinaryDataException
@@ -94,24 +91,24 @@ abstract class DataPacket implements Packet
     protected function encodeHeader(PacketSerializer $out): void
     {
         $out->putUnsignedVarInt(
-            static::NETWORK_ID |
+            self::NETWORK_ID |
             ($this->senderSubId << self::SENDER_SUBCLIENT_ID_SHIFT) |
             ($this->recipientSubId << self::RECIPIENT_SUBCLIENT_ID_SHIFT)
         );
     }
 
     /**
-     * Encodes the packet body, without the packet ID or other generic header fields.
+     * Encodes the packet body, excluding the packet ID and other generic header fields.
      */
     abstract protected function encodePayload(PacketSerializer $out): void;
 
     public function __get(string $name)
     {
-        throw new \Error("Undefined property: " . get_class($this) . "::\$" . $name);
+        throw new \Error("Undefined property: " . get_class($this) . "::\$$name");
     }
 
     public function __set(string $name, $value): void
     {
-        throw new \Error("Undefined property: " . get_class($this) . "::\$" . $name);
+        throw new \Error("Undefined property: " . get_class($this) . "::\$$name");
     }
 }

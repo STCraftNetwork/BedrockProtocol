@@ -18,7 +18,7 @@ use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\StructureEditorData;
 
-class StructureBlockUpdatePacket extends DataPacket implements ServerboundPacket{
+class StructureBlockUpdatePacket extends DataPacket implements ClientboundPacket{
 	public const NETWORK_ID = ProtocolInfo::STRUCTURE_BLOCK_UPDATE_PACKET;
 
 	public BlockPosition $blockPosition;
