@@ -829,4 +829,10 @@ trait PacketHandlerDefaultImplTrait{
 	public function handleContainerRegistryCleanup(ContainerRegistryCleanupPacket $packet) : bool{
 		return false;
 	}
+	public function handleMovementEffect(MovementEffectPacket $packet) : bool{
+		return false;
+	}
+	public function handleSetMovementAuthority(SetMovementAuthorityPacket $packet) : bool{
+		return false;
+	}
 }

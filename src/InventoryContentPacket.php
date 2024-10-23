@@ -27,17 +27,19 @@ class InventoryContentPacket extends DataPacket implements ClientboundPacket{
 	public array $items = [];
 	public FullContainerName $containerName;
 	public int $dynamicContainerSize;
+	public ItemStackWrapper $storage;
 
 	/**
 	 * @generate-create-func
 	 * @param ItemStackWrapper[] $items
 	 */
-	public static function create(int $windowId, array $items, FullContainerName $containerName, int $dynamicContainerSize) : self{
+	public static function create(int $windowId, array $items, FullContainerName $containerName, int $dynamicContainerSize, ItemStackWrapper $storage) : self{
 		$result = new self;
 		$result->windowId = $windowId;
 		$result->items = $items;
 		$result->containerName = $containerName;
 		$result->dynamicContainerSize = $dynamicContainerSize;
+		$result->storage = $storage;
 		return $result;
 	}
 
@@ -48,6 +50,7 @@ class InventoryContentPacket extends DataPacket implements ClientboundPacket{
 			$this->items[] = $in->getItemStackWrapper();
 		}
 		$this->containerName = FullContainerName::read($in);
+		$this->storage = $in->getItemStackWrapper();
 		$this->dynamicContainerSize = $in->getUnsignedVarInt();
 	}
 
@@ -58,6 +61,7 @@ class InventoryContentPacket extends DataPacket implements ClientboundPacket{
 			$out->putItemStackWrapper($item);
 		}
 		$this->containerName->write($out);
+		$out->putItemStackWrapper($this->storage);
 		$out->putUnsignedVarInt($this->dynamicContainerSize);
 	}
 

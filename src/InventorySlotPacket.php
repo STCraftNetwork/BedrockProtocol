@@ -26,16 +26,18 @@ class InventorySlotPacket extends DataPacket implements ClientboundPacket{
 	public FullContainerName $containerName;
 	public int $dynamicContainerSize;
 	public ItemStackWrapper $item;
+	public ItemStackWrapper $storage;
 
 	/**
 	 * @generate-create-func
 	 */
-	public static function create(int $windowId, int $inventorySlot, FullContainerName $containerName, int $dynamicContainerSize, ItemStackWrapper $item) : self{
+	public static function create(int $windowId, int $inventorySlot, FullContainerName $containerName, int $dynamicContainerSize, ItemStackWrapper $item, ItemStackWrapper $storage) : self{
 		$result = new self;
 		$result->windowId = $windowId;
 		$result->inventorySlot = $inventorySlot;
 		$result->containerName = $containerName;
 		$result->dynamicContainerSize = $dynamicContainerSize;
+		$result->storage = $storage;
 		$result->item = $item;
 		return $result;
 	}
@@ -45,6 +47,7 @@ class InventorySlotPacket extends DataPacket implements ClientboundPacket{
 		$this->inventorySlot = $in->getUnsignedVarInt();
 		$this->containerName = FullContainerName::read($in);
 		$this->dynamicContainerSize = $in->getUnsignedVarInt();
+		$this->storage = $in->getItemStackWrapper();
 		$this->item = $in->getItemStackWrapper();
 	}
 
@@ -52,6 +55,7 @@ class InventorySlotPacket extends DataPacket implements ClientboundPacket{
 		$out->putUnsignedVarInt($this->windowId);
 		$out->putUnsignedVarInt($this->inventorySlot);
 		$this->containerName->write($out);
+		$out->putItemStackWrapper($this->storage);
 		$out->putUnsignedVarInt($this->dynamicContainerSize);
 		$out->putItemStackWrapper($this->item);
 	}
