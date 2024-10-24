@@ -50,8 +50,3 @@ class MovementEffectPacket extends DataPacket implements ClientboundPacket{
 		return $handler->handleMovementEffect($this);
 	}
 }
-
-	public function handle(PacketHandlerInterface $handler) : bool{
-		return $handler->handleMovementEffect($this);
-	}
-}
