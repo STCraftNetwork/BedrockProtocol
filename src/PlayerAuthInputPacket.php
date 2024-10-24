@@ -16,7 +16,6 @@ namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
-use pocketmine\math\Vector2;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
 use pocketmine\network\mcpe\protocol\types\InputMode;
 use pocketmine\network\mcpe\protocol\types\InteractionMode;
@@ -134,11 +133,6 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		float $analogMoveVecZ,
 		Vector3 $cameraOrientation
 	) : self{
-		if($playMode === PlayMode::VR and $vrGazeDirection === null){
-			//yuck, can we get a properly written packet just once? ...
-			throw new \InvalidArgumentException("Gaze direction must be provided for VR play mode");
-		}
-
 		$realInputFlags = $inputFlags & ~((1 << PlayerAuthInputFlags::PERFORM_ITEM_STACK_REQUEST) | (1 << PlayerAuthInputFlags::PERFORM_ITEM_INTERACTION) | (1 << PlayerAuthInputFlags::PERFORM_BLOCK_ACTIONS));
 		if($itemStackRequest !== null){
 			$realInputFlags |= 1 << PlayerAuthInputFlags::PERFORM_ITEM_STACK_REQUEST;
@@ -229,9 +223,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		return $this->interactionMode;
 	}
 
-	public function getVrGazeDirection() : ?Vector3{
-		return $this->vrGazeDirection;
-	}
+	public function getInteractRotation() : Vector2{ return $this->interactRotation; }
 
 	public function getTick() : int{
 		return $this->tick;
@@ -279,9 +271,7 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		$this->inputMode = $in->getUnsignedVarInt();
 		$this->playMode = $in->getUnsignedVarInt();
 		$this->interactionMode = $in->getUnsignedVarInt();
-		if($this->playMode === PlayMode::VR){
-			$this->vrGazeDirection = $in->getVector3();
-		}
+		$this->interactRotation = $in->getVector2();
 		$this->tick = $in->getUnsignedVarLong();
 		$this->delta = $in->getVector3();
 		if($this->hasFlag(PlayerAuthInputFlags::PERFORM_ITEM_INTERACTION)){
