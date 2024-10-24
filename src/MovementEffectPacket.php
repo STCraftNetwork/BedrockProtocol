@@ -39,12 +39,18 @@ class MovementEffectPacket extends DataPacket implements ClientboundPacket{
 		$this->duration = $in->getUnsignedVarInt();
 		$this->tick = $in->getUnsignedVarLong();
 	}
+
 	protected function encodePayload(PacketSerializer $out) : void{
 		$out->putActorRuntimeId($this->actorRuntimeId);
 		$out->putUnsignedVarInt($this->effectType->value);
 		$out->putUnsignedVarInt($this->duration);
 		$out->putUnsignedVarLong($this->tick);
 	}
+	public function handle(PacketHandlerInterface $handler) : bool{
+		return $handler->handleMovementEffect($this);
+	}
+}
+
 	public function handle(PacketHandlerInterface $handler) : bool{
 		return $handler->handleMovementEffect($this);
 	}

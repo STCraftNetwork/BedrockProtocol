@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace pocketmine\network\mcpe\protocol;
 
+use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\math\Vector2;
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
@@ -109,7 +110,6 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 	 * @param int                      $inputMode @see InputMode
 	 * @param int                      $playMode @see PlayMode
 	 * @param int                      $interactionMode @see InteractionMode
-	 * @param Vector3|null             $vrGazeDirection only used when PlayMode::VR
 	 * @param PlayerBlockAction[]|null $blockActions Blocks that the client has interacted with
 	 */
 	public static function create(
@@ -134,6 +134,10 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		float $analogMoveVecZ,
 		Vector3 $cameraOrientation
 	) : self{
+		if($playMode === PlayMode::VR and $vrGazeDirection === null){
+			//yuck, can we get a properly written packet just once? ...
+			throw new \InvalidArgumentException("Gaze direction must be provided for VR play mode");
+		}
 
 		$realInputFlags = $inputFlags & ~((1 << PlayerAuthInputFlags::PERFORM_ITEM_STACK_REQUEST) | (1 << PlayerAuthInputFlags::PERFORM_ITEM_INTERACTION) | (1 << PlayerAuthInputFlags::PERFORM_BLOCK_ACTIONS));
 		if($itemStackRequest !== null){
@@ -225,8 +229,8 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		return $this->interactionMode;
 	}
 
-	public function getInteractRotation() : Vector2{
-		return $this->interactRotation;
+	public function getVrGazeDirection() : ?Vector3{
+		return $this->vrGazeDirection;
 	}
 
 	public function getTick() : int{
@@ -275,8 +279,9 @@ class PlayerAuthInputPacket extends DataPacket implements ServerboundPacket{
 		$this->inputMode = $in->getUnsignedVarInt();
 		$this->playMode = $in->getUnsignedVarInt();
 		$this->interactionMode = $in->getUnsignedVarInt();
-		$this->interactRotation = $in->getVector2();
-			
+		if($this->playMode === PlayMode::VR){
+			$this->vrGazeDirection = $in->getVector3();
+		}
 		$this->tick = $in->getUnsignedVarLong();
 		$this->delta = $in->getVector3();
 		if($this->hasFlag(PlayerAuthInputFlags::PERFORM_ITEM_INTERACTION)){
