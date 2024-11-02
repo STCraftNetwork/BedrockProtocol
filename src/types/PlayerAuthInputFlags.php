@@ -112,10 +112,4 @@ final class PlayerAuthInputFlags{
 	public const START_SPIN_ATTACK = 56;
 	public const STOP_SPIN_ATTACK = 57;
 
-	public const START_USING_ITEM = 53;
-	public const IS_CAMERA_RELATIVE_MOVEMENT_ENABLED = 54;
-	public const IS_ROT_CONTROLLED_BY_MOVE_DIRECTION = 55;
-	public const START_SPIN_ATTACK = 56;
-	public const STOP_SPIN_ATTACK = 57;
-
 }
