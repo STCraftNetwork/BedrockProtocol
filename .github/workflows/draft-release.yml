@@ -3,10 +3,8 @@
 name: Draft release
 
 # Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    tags: "[0-9]+.[0-9]+.[0-9]+\\+bedrock-[0-9]+.[0-9]+.[0-9]+"
+
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
