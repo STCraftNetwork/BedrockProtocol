@@ -1,7 +1,7 @@
 # BedrockProtocol
 [![CI](https://github.com/pmmp/BedrockProtocol/actions/workflows/ci.yml/badge.svg)](https://github.com/pmmp/BedrockProtocol/actions/workflows/ci.yml)
 
-An implementation of the Minecraft: Bedrock Edition protocol in PHP
+An implementation of the Minecraft: Bedrock Eddition protocol in PHP
 
 This library implements all of the packets in the Minecraft: Bedrock Edition protocol, as well as a few extra things needed to support them.
 However, at the time of writing, it does _not_ include the following:
