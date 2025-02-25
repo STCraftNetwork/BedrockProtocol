@@ -20,6 +20,7 @@ use pocketmine\nbt\NbtDataException;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\TreeRoot;
 use pocketmine\network\mcpe\protocol\PacketDecodeException;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\types\BoolGameRule;
 use pocketmine\network\mcpe\protocol\types\command\CommandOriginData;
@@ -64,17 +65,21 @@ use function strrev;
 use function substr;
 
 class PacketSerializer extends BinaryStream{
-	protected function __construct(string $buffer = "", int $offset = 0){
+	protected function __construct(private int $protocolId, string $buffer = "", int $offset = 0){
 		//overridden to change visibility
 		parent::__construct($buffer, $offset);
 	}
 
-	public static function encoder() : self{
-		return new self();
+	public static function encoder(int $protocolId) : self{
+		return new self($protocolId);
 	}
 
-	public static function decoder(string $buffer, int $offset) : self{
-		return new self($buffer, $offset);
+	public static function decoder(int $protocolId, string $buffer, int $offset) : self{
+		return new self($protocolId, $buffer, $offset);
+	}
+
+	public function getProtocolId() : int{
+		return $this->protocolId;
 	}
 
 	/**
@@ -595,8 +600,10 @@ class PacketSerializer extends BinaryStream{
 		$type = $this->getByte();
 		$immediate = $this->getBool();
 		$causedByRider = $this->getBool();
-		$vehicleAngularVelocity = $this->getLFloat();
-		return new EntityLink($fromActorUniqueId, $toActorUniqueId, $type, $immediate, $causedByRider, $vehicleAngularVelocity);
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$vehicleAngularVelocity = $this->getLFloat();
+		}
+		return new EntityLink($fromActorUniqueId, $toActorUniqueId, $type, $immediate, $causedByRider, $vehicleAngularVelocity ?? 0.0);
 	}
 
 	public function putEntityLink(EntityLink $link) : void{
@@ -605,7 +612,9 @@ class PacketSerializer extends BinaryStream{
 		$this->putByte($link->type);
 		$this->putBool($link->immediate);
 		$this->putBool($link->causedByRider);
-		$this->putLFloat($link->vehicleAngularVelocity);
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_20){
+			$this->putLFloat($link->vehicleAngularVelocity);
+		}
 	}
 
 	/**
@@ -683,7 +692,9 @@ class PacketSerializer extends BinaryStream{
 		$result = new StructureEditorData();
 
 		$result->structureName = $this->getString();
-		$result->filteredStructureName = $this->getString();
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$result->filteredStructureName = $this->getString();
+		}
 		$result->structureDataField = $this->getString();
 
 		$result->includePlayers = $this->getBool();
@@ -698,7 +709,9 @@ class PacketSerializer extends BinaryStream{
 
 	public function putStructureEditorData(StructureEditorData $structureEditorData) : void{
 		$this->putString($structureEditorData->structureName);
-		$this->putString($structureEditorData->filteredStructureName);
+		if($this->getProtocolId() >= ProtocolInfo::PROTOCOL_1_21_60){
+			$this->putString($structureEditorData->filteredStructureName);
+		}
 		$this->putString($structureEditorData->structureDataField);
 
 		$this->putBool($structureEditorData->includePlayers);

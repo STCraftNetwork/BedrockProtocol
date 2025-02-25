@@ -32,13 +32,37 @@ final class ProtocolInfo{
 	 */
 
 	/** Actual Minecraft: PE protocol version */
-	public const CURRENT_PROTOCOL = 776;
+	public const CURRENT_PROTOCOL = self::PROTOCOL_1_21_60;
+	public const ACCEPTED_PROTOCOL = [
+		self::PROTOCOL_1_21_0,
+		self::PROTOCOL_1_21_2,
+		self::PROTOCOL_1_21_20,
+		self::PROTOCOL_1_21_30,
+		self::PROTOCOL_1_21_40,
+		self::PROTOCOL_1_21_50,
+		self::CURRENT_PROTOCOL,
+	];
+
 	/** Current Minecraft PE version reported by the server. This is usually the earliest currently supported version. */
 	public const MINECRAFT_VERSION = 'v1.21.60';
 	/** Version number sent to clients in ping responses. */
 	public const MINECRAFT_VERSION_NETWORK = '1.21.60';
 
-	public const MINECRAFT_1_21 = ["766"];
+	public const PROTOCOL_1_21_60 = 776;
+	public const PROTOCOL_1_21_50 = 766;
+	public const PROTOCOL_1_21_40 = 748;
+	public const PROTOCOL_1_21_30 = 729;
+	public const PROTOCOL_1_21_20 = 712;
+	public const PROTOCOL_1_21_2 = 686;
+	public const PROTOCOL_1_21_0 = 685;
+	public const PROTOCOL_1_20_80 = 671;
+	public const PROTOCOL_1_20_70 = 662;
+	public const PROTOCOL_1_20_60 = 649;
+	public const PROTOCOL_1_20_50 = 630;
+	public const PROTOCOL_1_20_40 = 622;
+	public const PROTOCOL_1_20_30 = 618;
+	public const PROTOCOL_1_20_10 = 594;
+	public const PROTOCOL_1_20_0 = 589;
 
 	public const LOGIN_PACKET = 0x01;
 	public const PLAY_STATUS_PACKET = 0x02;
@@ -62,7 +86,7 @@ final class ProtocolInfo{
 	public const PASSENGER_JUMP_PACKET = 0x14;
 	public const UPDATE_BLOCK_PACKET = 0x15;
 	public const ADD_PAINTING_PACKET = 0x16;
-
+	public const TICK_SYNC_PACKET = 0x17;
 	public const LEVEL_SOUND_EVENT_PACKET_V1 = 0x18;
 	public const LEVEL_EVENT_PACKET = 0x19;
 	public const BLOCK_EVENT_PACKET = 0x1a;
@@ -92,9 +116,9 @@ final class ProtocolInfo{
 	public const INVENTORY_SLOT_PACKET = 0x32;
 	public const CONTAINER_SET_DATA_PACKET = 0x33;
 	public const CRAFTING_DATA_PACKET = 0x34;
-
+	public const CRAFTING_EVENT_PACKET = 0x35;
 	public const GUI_DATA_PICK_ITEM_PACKET = 0x36;
-
+	public const ADVENTURE_SETTINGS_PACKET = 0x37;
 	public const BLOCK_ACTOR_DATA_PACKET = 0x38;
 	public const PLAYER_INPUT_PACKET = 0x39;
 	public const LEVEL_CHUNK_PACKET = 0x3a;
